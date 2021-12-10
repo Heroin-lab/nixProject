@@ -5,37 +5,56 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./style/fonts.css">
+    <link rel="stylesheet" href="./style/style.css">
     <title>KirillProject</title>
-    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<div class="wrapper">
-    <header class="header-block">
-        <h4 class="header-lable">This is header</h4>
-    </header>
-    <main class="main_container">
-        <div class="border_container">
-            <nav class="nav_bar">
+    <header class="header">
+        <div class="container">
+            <img class="logo" src="./img/crop-logo.png" alt="#logo">
+            <nav class="navbar">
                 <ul>
-                    <li><a href="#">Main</a></li>
-                    <li><a href="#">Flex</a></li>
-                    <li><a href="#">Style</a></li>
-                    <li><a href="#">About us</a></li>
+                    <li><a href="#">Список товаров</a></li>
+                    <li><a href="#">Коризина</a></li>
+                    <li><a href="#">Войти</a></li>
                 </ul>
             </nav>
+        </div>
+    </header>
 
-            <div class="right_side_inputs">
-                <input type="text">
-                <input type="text">
-                <input type="text">
-                <input type="text">
+    <main class="main-container">
+        <div class="container">
+            <div class="slider">
+                <input type="radio" class="slider__buttons" name="radio-btn" id="radio1">
+                <input type="radio" class="slider__buttons" name="radio-btn" id="radio2">
+                <input type="radio" class="slider__buttons" name="radio-btn" id="radio3">
+
+                <div class="slider__image">
+                    <img src="./img/1slide.jpg" alt="#" width="1200" height="628">
+                </div>
+
+                <div class="slider__image">
+                    <img src="./img/2slide.jpg" alt="#" width="1200" height="628">
+                </div>
+
+                <div class="slider__image">
+                    <img src="./img/3slide.jpg" alt="#" width="1200" height="628">
+                </div>
+
+                <div class="slider__nav-auto">
+                    <div class="auto-btn1"></div>
+                    <div class="auto-btn2"></div>
+                    <div class="auto-btn3"></div>
+                </div>
+            </div>
+
+            <div class="nav-manual">
+                <label for="radio1" class="nav-manual__btn"></label>
+                <label for="radio2" class="nav-manual__btn"></label>
+                <label for="radio3" class="nav-manual__btn"></label>
             </div>
         </div>
-        <button class="home_button">HOME</button>
     </main>
-    <footer class="footer-block">
-        <h4 class="footers-lable">This is footer</h4>
-    </footer>
-</div>
 </body>
 </html>
