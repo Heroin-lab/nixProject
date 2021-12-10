@@ -8,7 +8,9 @@
 
 .header {
     width: 100vw;
-    background-color: #121212;
+    background-color: #ffffff;
+    /*border-bottom: 1px solid #bdbdbd;*/
+    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, .1);
 }
 
 .container {
@@ -42,7 +44,7 @@
 }
 
 .navbar ul li:hover {
-    border-bottom: 4px solid white;
+    border-bottom: 4px solid #000000;
 }
 
 .navbar ul li a{
@@ -51,21 +53,117 @@
     font-family: "Bebas Neue Cyrillic";
     font-size: 27px;
     letter-spacing: 1px;
-    color: #ffffff;
+    color: #000000;
 }
 
 /*End of the header*/
 
+/*Start of main container*/
 
-.slider {
-    display: flex;
+.main-container {
+    margin-top: 20px;
+}
+
+    /*Start of slider*/
+
+.slider-hub {
+    width: 1200px;
+    height: 628px;
+    border-radius: 21px;
     overflow: hidden;
 }
 
-.slider__buttons {
+.slides {
+    display: flex;
+    width: 500%;
+    /*height: 628px;*/
+}
+
+.slides__buttons {
     display: none;
 }
 
-.slider__image img {
-    border-radius: 21px;
+.slides__image {
+    width: 20%;
+    transition: 1.7s;
 }
+
+
+        /*Start of blanck sliding*/
+
+.slides__nav-auto {
+    display: flex;
+    position: absolute;
+    width: 1200px;
+    justify-content: center;
+    margin-top: 592px;
+}
+
+.slides__nav-auto div {
+    border: 3px solid #ffffff;
+    padding: 5px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.slides__nav-auto div:not(:last-child) {
+    margin-right: 30px;
+}
+
+#radio1:checked ~ .slides__nav-auto .auto-btn1 {
+    background-color: #ffffff;
+}
+
+#radio2:checked ~ .slides__nav-auto .auto-btn2 {
+    background-color: #ffffff;
+}
+
+#radio3:checked ~ .slides__nav-auto .auto-btn3 {
+    background-color: #ffffff;
+}
+
+        /*End of blanck sliding*/
+
+        /*Start of manual navigation*/
+
+.nav-manual {
+    display: flex;
+    position: absolute;
+    width: 1200px;
+    margin-top: -40px;
+    justify-content: center;
+}
+
+.nav-manual__btn {
+    border: 3px solid #ffffff;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.nav-manual__btn:hover {
+    background-color: #ffffff;
+}
+
+.nav-manual__btn:not(:last-child) {
+    margin-right: 30px;
+}
+
+#radio1:checked ~ .first {
+    margin-left: 0;
+}
+
+#radio2:checked ~ .first {
+    margin-left: -20%;
+}
+
+#radio3:checked ~ .first {
+    margin-left: -40%;
+}
+
+        /*End of manual navigation*/
+
+    /*End of slider*/
+
+/*End of main container*/
