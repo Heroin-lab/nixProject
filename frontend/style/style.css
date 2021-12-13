@@ -20,15 +20,8 @@
     margin: 0 auto;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
 .logo {
     margin: 20px 0 20px 0;
-    width: 60px;
-    height: 50px;
 }
 
 .navbar {
@@ -54,7 +47,7 @@
 .navbar ul li a{
     text-decoration: none;
     text-transform: uppercase;
-    font-family: "Bebas Neue Cyrillic";
+    font-family: "Bebas Neue Cyrillic", sans-serif;;
     font-size: 27px;
     letter-spacing: 1px;
     color: #000000;
@@ -65,7 +58,9 @@
 /*Start of main container*/
 
 .main-container {
+    margin: 0 auto;
     margin-top: 30px;
+    max-width: 1200px;
 }
 
     /*Start of slider*/
@@ -177,34 +172,34 @@
     margin-top: 40px;
 }
 
-.popular-items__item {
-    width: 270px;
+.item-list__item {
+    width: 275px;
     text-align: center;
     border-radius: 14px;
     box-shadow: 0 2px 7px 0 rgba(0, 0, 0, .1);
 }
 
-.popular-items__item img {
+.item-list__item img {
     padding-top: 25px;
 }
 
-.popular-items__item a {
+.item-list__item a {
     font-size: 24px;
-    font-family: "Bebas Neue Cyrillic";
+    font-family: "Bebas Neue Cyrillic", sans-serif;;
     text-decoration: none;
     color: black;
 }
 
-.popular-items__item a:hover {
+.item-list__item a:hover {
     color: #21bce1;
     text-decoration: underline;
 }
 
-.popular-items__item p {
+.item-list__item p {
     padding-top: 10px;
 }
 
-.popular-items__item h5 {
+.item-list__item h5 {
     padding: 5px 0 20px 0;
     font-size: 20px;
 }

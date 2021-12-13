@@ -1,0 +1,48 @@
+.main-container__grid {
+    display: grid;
+    grid-template-columns: 25% 75%;
+}
+
+.left-side-navbar {
+    height: 715px;
+    border-radius: 14px;
+    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, .1);
+}
+
+.left-side-navbar h3{
+    padding: 15px 0 15px 0;
+
+    text-align: center;
+    font-family: "Bebas Neue Cyrillic", sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, .1);
+}
+
+.left-side-navbar ul {
+    list-style: none;
+}
+
+.left-side-navbar ul li {
+    height: 57px;
+    padding: 20px 0 0 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+    font-family: "Bebas Neue Cyrillic", sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+input[type=checkbox] {width:16px; height:16px; margin-right: 5px}
+
+.item-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+}
+
+.item-list-container .item-list__item {
+    margin: 0 0 25px 25px;
+}
