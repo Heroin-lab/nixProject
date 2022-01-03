@@ -1,22 +1,20 @@
 package appserver
 
 import (
+	logger "github.com/Heroin-lab/heroin-logger/v3"
 	"github.com/gorilla/mux"
-	"github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 )
 
 type AppServer struct {
 	config *Config
-	logger *logrus.Logger
 	router *mux.Router
 }
 
 func New(config *Config) *AppServer {
 	return &AppServer{
 		config: config,
-		logger: logrus.New(),
 		router: mux.NewRouter(),
 	}
 }
@@ -28,19 +26,14 @@ func (s *AppServer) Start() error {
 
 	s.configreRouter()
 
-	s.logger.Info("Starting app server")
+	logger.Info("Starting app server")
 
 	return http.ListenAndServe(s.config.BindAddress, s.router)
 }
 
 func (s *AppServer) configureLogger() error {
-	level, err := logrus.ParseLevel(s.config.LogLevel)
-	if err != nil {
-		return err
-	}
-
-	s.logger.SetLevel(level)
-
+	logger.SetLogLevel(s.config.LogLevel)
+	logger.DebugMsg("App logger was started in debug mod!")
 	return nil
 }
 

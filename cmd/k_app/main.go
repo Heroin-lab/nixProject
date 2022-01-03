@@ -3,9 +3,8 @@ package main
 import (
 	"flag"
 	"github.com/BurntSushi/toml"
-	logger "github.com/Heroin-lab/heroin-logger/v2"
+	logger "github.com/Heroin-lab/heroin-logger/v3"
 	"github.com/Heroin-lab/nixProject/internal/app/appserver"
-
 	"log"
 )
 

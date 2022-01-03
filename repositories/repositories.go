@@ -1,6 +1,6 @@
 package repositories
 
-import "nixProject/backend/repositories/models"
+import "github.com/Heroin-lab/nixProject/repositories/models"
 
 type UserRepositoryInterface interface {
 	GetByEmail(email string) models.User
