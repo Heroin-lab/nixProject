@@ -1,8 +1,0 @@
-package models
-
-type User struct {
-	Id           string
-	Email        string
-	PasswordHash string
-	CreatedAt    string
-}

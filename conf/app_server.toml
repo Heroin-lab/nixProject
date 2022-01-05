@@ -1,2 +1,5 @@
 bind_addr = ":7777"
 log_level = "debug"
+
+[Storage]
+database_url = "root:password@/nix_db"

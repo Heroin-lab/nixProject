@@ -2,14 +2,16 @@ package appserver
 
 import (
 	logger "github.com/Heroin-lab/heroin-logger/v3"
+	"github.com/Heroin-lab/nixProject/repositories/database"
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
 )
 
 type AppServer struct {
-	config *Config
-	router *mux.Router
+	config  *Config
+	router  *mux.Router
+	storage *database.Storage
 }
 
 func New(config *Config) *AppServer {
@@ -26,6 +28,10 @@ func (s *AppServer) Start() error {
 
 	s.configreRouter()
 
+	if err := s.configureStorage(); err != nil {
+		return err
+	}
+
 	logger.Info("Starting app server")
 
 	return http.ListenAndServe(s.config.BindAddress, s.router)
@@ -40,6 +46,16 @@ func (s *AppServer) configureLogger() error {
 func (s *AppServer) configreRouter() error {
 	s.router.HandleFunc("/hello", s.handleHello())
 
+	return nil
+}
+
+func (s *AppServer) configureStorage() error {
+	st := database.New(s.config.Storage)
+	if err := st.Open(); err != nil {
+		return err
+	}
+
+	s.storage = st
 	return nil
 }
 
