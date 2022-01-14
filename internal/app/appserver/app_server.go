@@ -1,10 +1,13 @@
 package appserver
 
 import (
+	"encoding/json"
+	"fmt"
 	logger "github.com/Heroin-lab/heroin-logger/v3"
 	"github.com/Heroin-lab/nixProject/repositories/database"
+	"github.com/Heroin-lab/nixProject/repositories/models"
 	"github.com/gorilla/mux"
-	"io"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 )
 
@@ -44,7 +47,7 @@ func (s *AppServer) configureLogger() error {
 }
 
 func (s *AppServer) configreRouter() error {
-	s.router.HandleFunc("/hello", s.handleHello())
+	s.router.HandleFunc("/login", s.Login())
 
 	return nil
 }
@@ -59,12 +62,54 @@ func (s *AppServer) configureStorage() error {
 	return nil
 }
 
-func (s *AppServer) handleHello() http.HandlerFunc {
+func (s *AppServer) Login() http.HandlerFunc {
 	//type request struct {
 	//	name string
 	//}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "Hello")
+		switch r.Method {
+		case "POST":
+			req := new(models.LoginRequest)
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+
+			repos := database.UserRepos{}
+			user, err := repos.GetByEmail(req.Email)
+			if err != nil {
+				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+				return
+			}
+
+			if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
+				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+				return
+			}
+
+			//	accessString, err := GenerateToken(user.ID, accessLifetimeMinutes, accessSecret)
+			//	if err != nil {
+			//		http.Error(w, err.Error(), http.StatusInternalServerError)
+			//		return
+			//	}
+			//
+			//	refreshString, err := GenerateToken(user.ID, refreshLifetimeMinutes, refreshSecret)
+			//	if err != nil {
+			//		http.Error(w, err.Error(), http.StatusInternalServerError)
+			//		return
+			//	}
+			//
+			//	resp := LoginResponse{
+			//		AccessToken:  accessString,
+			//		RefreshToken: refreshString,
+			//	}
+			//
+			//	w.WriteHeader(http.StatusOK)
+			//	json.NewEncoder(w).Encode(resp)
+			//default:
+			//	http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
+			fmt.Println(user.Id)
+		}
 	}
 }
