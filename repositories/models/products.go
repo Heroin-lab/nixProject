@@ -1,10 +1,11 @@
 package models
 
 type Products struct {
-	Id         string
-	SupplierId string
-	Category   string
-	Name       string
-	Price      float32
-	Discount   int
+	Id           string
+	Product_name string
+	Category_id  int
+	Price        string
+	Description  string
+	Amount_left  int
+	Supplier_id  int
 }

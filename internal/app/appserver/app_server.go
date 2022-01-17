@@ -49,6 +49,7 @@ func (s *AppServer) configureLogger() error {
 func (s *AppServer) configreRouter() error {
 	s.router.HandleFunc("/register", s.handleUsersCreate())
 	s.router.HandleFunc("/login", s.handleUsersLogin())
+	s.router.HandleFunc("/getAllItems", s.handleProductsByCategory())
 
 	return nil
 }
@@ -88,7 +89,6 @@ func (s *AppServer) handleUsersCreate() http.HandlerFunc {
 			return
 		}
 	}
-
 }
 
 func (s *AppServer) handleUsersLogin() http.HandlerFunc {
@@ -134,6 +134,24 @@ func (s *AppServer) handleUsersLogin() http.HandlerFunc {
 
 			w.WriteHeader(http.StatusOK)
 			json.NewEncoder(w).Encode(resp)
+		default:
+			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
+		}
+	}
+}
+
+func (s *AppServer) handleProductsByCategory() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "POST":
+			getItems, err := s.storage.Product().GetByCategory()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusConflict)
+				return
+			}
+
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(getItems)
 		default:
 			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 		}

@@ -11,6 +11,7 @@ type Storage struct {
 	config         *Config
 	db             *sql.DB
 	userRepository *UserRepos
+	prodRepository *ProductRepose
 }
 
 func New(config *Config) *Storage {
@@ -55,4 +56,16 @@ func (s *Storage) User() *UserRepos {
 	}
 
 	return s.userRepository
+}
+
+func (s *Storage) Product() *ProductRepose {
+	if s.prodRepository != nil {
+		return s.prodRepository
+	}
+
+	s.prodRepository = &ProductRepose{
+		storage: s,
+	}
+
+	return s.prodRepository
 }

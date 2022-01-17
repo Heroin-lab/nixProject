@@ -10,11 +10,12 @@ type UserRepos struct {
 
 func (r *UserRepos) Create(u *models.User) (*models.User, error) {
 	u.BeforeCreate()
-	if err := r.storage.db.QueryRow(
+	_, err := r.storage.db.Exec(
 		"INSERT INTO users (email, password) VALUES (?, ?)",
 		u.Email,
 		u.Password,
-	).Scan(&u.Id); err != nil {
+	)
+	if err != nil {
 		return nil, err
 	}
 
