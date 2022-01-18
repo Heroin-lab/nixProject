@@ -33,3 +33,31 @@ func (r *UserRepos) GetByEmail(email string) (*models.User, error) {
 	}
 	return u, nil
 }
+
+//func GetProfile(w http.ResponseWriter, r *http.Request) {
+//	switch r.Method {
+//	case "GET":
+//		claims, err := ValidateToken(GetTokenFromBearerString(r.Header.Get("Authorization")), refreshSecret)
+//		if err != nil {
+//			http.Error(w, err.Error(), http.StatusUnauthorized)
+//			return
+//		}
+//
+//		user, err := NewUserRepository().GetUserByID(claims.ID)
+//		if err != nil {
+//			http.Error(w, "User does not exist", http.StatusBadRequest)
+//			return
+//		}
+//
+//		resp := UserResponse{
+//			ID:    user.ID,
+//			Name:  user.Name,
+//			Email: user.Email,
+//		}
+//
+//		w.WriteHeader(http.StatusOK)
+//		json.NewEncoder(w).Encode(resp)
+//	default:
+//		http.Error(w, "Only GET method is allowed", http.StatusMethodNotAllowed)
+//	}
+//}

@@ -8,7 +8,6 @@ import (
 	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
-	"strconv"
 )
 
 type AppServer struct {
@@ -65,30 +64,40 @@ func (s *AppServer) configureStorage() error {
 
 func (s *AppServer) handleUsersCreate() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := new(models.LoginRequest)
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			logger.Error("Server respond with bad request status!")
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
+		switch r.Method {
+		case "POST":
+			req := new(models.LoginRequest)
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				logger.Error("Server respond with bad request status!")
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
 
-		_, err := s.storage.User().GetByEmail(req.Email)
-		if err == nil {
-			http.Error(w, "Already exists", http.StatusConflict)
-			return
-		}
+			_, err := s.storage.User().GetByEmail(req.Email)
+			if err == nil {
+				http.Error(w, "Already exists", http.StatusConflict)
+				return
+			}
 
-		u := &models.User{
-			Email:    req.Email,
-			Password: req.Password,
-		}
+			u := &models.User{
+				Email:    req.Email,
+				Password: req.Password,
+			}
 
-		if _, err := s.storage.User().Create(u); err != nil {
-			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
-			return
+			if _, err := s.storage.User().Create(u); err != nil {
+				if _, err := s.storage.User().GetByEmail(req.Email); err == nil {
+					w.WriteHeader(http.StatusOK)
+					return
+				}
+				http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+				return
+			}
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 		}
 	}
-
 }
 
 func (s *AppServer) handleUsersLogin() http.HandlerFunc {
@@ -108,20 +117,20 @@ func (s *AppServer) handleUsersLogin() http.HandlerFunc {
 				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 				return
 			}
-			convId, _ := strconv.Atoi(user.Id)
+			//convId, _ := strconv.Atoi(user.Id)
 
 			if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 				return
 			}
 
-			accessString, err := GenerateToken(convId, s.config.AccessLifetimeMin, s.config.AccessSecretStr)
+			accessString, err := GenerateToken(user.Id, s.config.AccessLifetimeMin, s.config.AccessSecretStr)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
 
-			refreshString, err := GenerateToken(convId, s.config.RefreshLifetimeMin, s.config.RefreshSecretStr)
+			refreshString, err := GenerateToken(user.Id, s.config.RefreshLifetimeMin, s.config.RefreshSecretStr)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
