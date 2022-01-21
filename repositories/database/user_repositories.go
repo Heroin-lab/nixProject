@@ -10,11 +10,12 @@ type UserRepos struct {
 
 func (r *UserRepos) Create(u *models.User) (*models.User, error) {
 	u.BeforeCreate()
-	if err := r.storage.db.QueryRow(
+	_, err := r.storage.db.Exec(
 		"INSERT INTO users (email, password) VALUES (?, ?)",
 		u.Email,
 		u.Password,
-	).Scan(&u.Id); err != nil {
+	)
+	if err != nil {
 		return nil, err
 	}
 
@@ -23,25 +24,16 @@ func (r *UserRepos) Create(u *models.User) (*models.User, error) {
 
 func (r *UserRepos) GetByEmail(email string) (*models.User, error) {
 	u := &models.User{}
-<<<<<<< HEAD
-	if err := r.storage.db.QueryRow("SELECT id, email, password FROM users WHERE email = ?",
-		email,
-	).Scan(
-=======
 	if err := r.storage.db.QueryRow(
 		"SELECT id, email, password FROM users WHERE email = ?", email).Scan(
->>>>>>> c56ec5407024cea03fdda6c0210eab953b96d09a
 		&u.Id,
 		&u.Email,
 		&u.Password,
 	); err != nil {
 		return nil, err
 	}
-<<<<<<< HEAD
-	return nil, nil
-=======
+
 	return u, nil
->>>>>>> c56ec5407024cea03fdda6c0210eab953b96d09a
 }
 
 //func GetProfile(w http.ResponseWriter, r *http.Request) {
