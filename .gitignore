@@ -17,3 +17,5 @@ vendor/
 # IDE directories
 *.vscode
 *.idea
+
+k_app

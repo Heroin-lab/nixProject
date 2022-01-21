@@ -1,9 +1,18 @@
 package models
 
+<<<<<<< HEAD
 import "golang.org/x/crypto/bcrypt"
 
 type User struct {
 	Id       string
+=======
+import (
+	"golang.org/x/crypto/bcrypt"
+)
+
+type User struct {
+	Id       int
+>>>>>>> c56ec5407024cea03fdda6c0210eab953b96d09a
 	Email    string
 	Password string
 }

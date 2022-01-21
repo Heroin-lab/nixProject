@@ -1,5 +1,16 @@
 bind_addr = ":7777"
 log_level = "debug"
 
+[Tokens]
+accessSecret  = "access_secret_k"
+refreshSecret = "refresh_secret_k"
+
+accessLifetimeMinutes  = 5
+refreshLifetimeMinutes = 60
+
 [Storage]
+<<<<<<< HEAD
 database_url = "root:password@/nix_db"
+=======
+database_url = "kirill:Ya8eb2a3l@/nix_db"
+>>>>>>> c56ec5407024cea03fdda6c0210eab953b96d09a
