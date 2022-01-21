@@ -49,7 +49,7 @@ func (s *AppServer) configureLogger() error {
 func (s *AppServer) configreRouter() error {
 	s.router.HandleFunc("/register", s.handleUsersCreate())
 	s.router.HandleFunc("/login", s.handleUsersLogin())
-	s.router.HandleFunc("/getAllItems", s.handleProductsByCategory())
+	s.router.HandleFunc("/get-by-category", s.handleProductsByCategory())
 
 	return nil
 }
@@ -66,7 +66,9 @@ func (s *AppServer) configureStorage() error {
 
 func (s *AppServer) handleUsersCreate() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		req := new(models.LoginRequest)
+
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			logger.Error("Server respond with bad request status!")
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -144,7 +146,17 @@ func (s *AppServer) handleProductsByCategory() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
-			getItems, err := s.storage.Product().GetByCategory()
+			type categoryString struct {
+				Category string `json:"category"`
+			}
+			req := new(categoryString)
+
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+
+			getItems, err := s.storage.Product().GetByCategory(req.Category)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusConflict)
 				return
