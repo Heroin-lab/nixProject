@@ -1,10 +1,12 @@
 package repositories
 
-import "github.com/Heroin-lab/nixProject/internal/app/models"
+import (
+	"github.com/Heroin-lab/nixProject/repositories/models"
+)
 
 type UserRepositoryInterface interface {
 	Create(u *models.User) (*models.User, error)
-	GetByEmailGetByEmail(email string) (*models.User, error)
+	GetByEmail(email string) (*models.User, error)
 	UpdateByEmail(u *models.User)
 }
 type SuppliersRepositoryInterface interface {

@@ -1,10 +1,11 @@
 package appserver
 
 import (
+	"encoding/json"
+	"fmt"
 	logger "github.com/Heroin-lab/heroin-logger/v3"
 	"github.com/Heroin-lab/nixProject/repositories/database"
 	"github.com/gorilla/mux"
-	"io"
 	"net/http"
 )
 
@@ -26,7 +27,7 @@ func (s *AppServer) Start() error {
 		return err
 	}
 
-	s.configreRouter()
+	s.configureRouter()
 
 	if err := s.configureStorage(); err != nil {
 		return err
@@ -43,8 +44,9 @@ func (s *AppServer) configureLogger() error {
 	return nil
 }
 
-func (s *AppServer) configreRouter() error {
+func (s *AppServer) configureRouter() error {
 	s.router.HandleFunc("/hello", s.handleHello())
+	//s.router.HandleFunc("/login", s.handleLogin())
 
 	return nil
 }
@@ -60,11 +62,18 @@ func (s *AppServer) configureStorage() error {
 }
 
 func (s *AppServer) handleHello() http.HandlerFunc {
-	//type request struct {
-	//	name string
-	//}
+	type request struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "Hello")
+		req := new(request)
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		fmt.Println(req.Email)
 	}
 }
