@@ -1,159 +1,52 @@
 package appserver
 
 import (
-	"encoding/json"
+	"database/sql"
 	logger "github.com/Heroin-lab/heroin-logger/v3"
-	database "github.com/Heroin-lab/nixProject/repositories/database"
-	"github.com/Heroin-lab/nixProject/repositories/models"
-	"github.com/gorilla/mux"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/Heroin-lab/nixProject/repositories/database"
 	"net/http"
-	"strconv"
+	"time"
 )
 
-type AppServer struct {
-	config  *Config
-	router  *mux.Router
-	storage *database.Storage
-}
-
-func New(config *Config) *AppServer {
-	return &AppServer{
-		config: config,
-		router: mux.NewRouter(),
-	}
-}
-
-func (s *AppServer) Start() error {
-	if err := s.configureLogger(); err != nil {
+func Start(config *Config) error {
+	if err := configureLogger(config.LogLevel); err != nil {
 		return err
 	}
 
-	s.configreRouter()
-
-	if err := s.configureStorage(); err != nil {
+	sqlDB, err := newDB(config.DatabaseURL)
+	if err != nil {
 		return err
 	}
+	defer sqlDB.Close()
+
+	store := database.New(sqlDB)
+	srv := NewServer(store)
 
 	logger.Info("Starting app server")
 
-	return http.ListenAndServe(s.config.BindAddress, s.router)
+	return http.ListenAndServe(config.BindAddress, srv)
 }
 
-func (s *AppServer) configureLogger() error {
-	logger.SetLogLevel(s.config.LogLevel)
+func newDB(databaseURL string) (*sql.DB, error) {
+	db, err := sql.Open("mysql", databaseURL)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+	logger.DebugMsg("DB was successfully connected")
+
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
+
+	return db, nil
+}
+
+func configureLogger(logLevel string) error {
+	logger.SetLogLevel(logLevel)
 	logger.DebugMsg("App logger was started in debug mod!")
 	return nil
-}
-
-func (s *AppServer) configreRouter() error {
-	s.router.HandleFunc("/register", s.handleUsersCreate())
-	s.router.HandleFunc("/login", s.handleUsersLogin())
-	s.router.HandleFunc("/getAllItems", s.handleProductsByCategory())
-
-	return nil
-}
-
-func (s *AppServer) configureStorage() error {
-	st := database.New(s.config.Storage)
-	if err := st.Open(); err != nil {
-		return err
-	}
-
-	s.storage = st
-	return nil
-}
-
-func (s *AppServer) handleUsersCreate() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		req := new(models.LoginRequest)
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			logger.Error("Server respond with bad request status!")
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		_, err := s.storage.User().GetByEmail(req.Email)
-		if err == nil {
-			http.Error(w, "Already exists", http.StatusConflict)
-			return
-		}
-
-		u := &models.User{
-			Email:    req.Email,
-			Password: req.Password,
-		}
-
-		if _, err := s.storage.User().Create(u); err != nil {
-			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
-			return
-		}
-	}
-}
-
-func (s *AppServer) handleUsersLogin() http.HandlerFunc {
-
-	return func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case "POST":
-			req := new(models.LoginRequest)
-
-			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-
-			user, err := s.storage.User().GetByEmail(req.Email)
-			if err != nil {
-				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-				return
-			}
-			convId, _ := strconv.Atoi(user.Id)
-
-			if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-				return
-			}
-
-			accessString, err := GenerateToken(convId, s.config.AccessLifetimeMin, s.config.AccessSecretStr)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-
-			refreshString, err := GenerateToken(convId, s.config.RefreshLifetimeMin, s.config.RefreshSecretStr)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-
-			resp := models.LoginResponse{
-				AccessToken:  accessString,
-				RefreshToken: refreshString,
-			}
-
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(resp)
-		default:
-			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-		}
-	}
-}
-
-func (s *AppServer) handleProductsByCategory() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case "POST":
-			getItems, err := s.storage.Product().GetByCategory()
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusConflict)
-				return
-			}
-
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(getItems)
-		default:
-			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-		}
-	}
 }

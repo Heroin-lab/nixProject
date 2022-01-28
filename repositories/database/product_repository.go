@@ -6,40 +6,58 @@ type ProductRepose struct {
 	storage *Storage
 }
 
-func (r *ProductRepose) GetByCategory() ([]*models.Products, error) {
-	u := &models.Products{}
+func (r *ProductRepose) GetByCategory(cat_name string) ([]*models.ForSelectProducts, error) {
+	u := &models.ForSelectProducts{}
 
-	allProdSql, err := r.storage.db.Query("SELECT * FROM products")
+	allProdSql, err := r.storage.db.Query("SELECT product_name, category_name, price, prod_desc, amount_left, title\n"+
+		"FROM products\n"+
+		"INNER JOIN categories c on products.category_id = c.id\n"+
+		"INNER JOIN suppliers s on products.supplier_id = s.id\n"+
+		"WHERE category_name = ?", cat_name)
 	if err != nil {
 		return nil, err
 	}
+	defer allProdSql.Close()
 
-	allProdArr := make([]*models.Products, 0)
+	allProdArr := make([]*models.ForSelectProducts, 0)
 
 	for allProdSql.Next() {
 
 		err = allProdSql.Scan(
-			&u.Id,
 			&u.Product_name,
-			&u.Category_id,
+			&u.Category_name,
 			&u.Price,
-			&u.Description,
+			&u.Prod_desc,
 			&u.Amount_left,
-			&u.Supplier_id,
+			&u.Title,
 		)
 		if err != nil {
 			return nil, err
 		}
 
-		allProdArr = append(allProdArr, &models.Products{
-			Id:           u.Id,
-			Product_name: u.Product_name,
-			Category_id:  u.Category_id,
-			Price:        u.Price,
-			Description:  u.Description,
-			Amount_left:  u.Amount_left,
-			Supplier_id:  u.Supplier_id,
+		allProdArr = append(allProdArr, &models.ForSelectProducts{
+			Product_name:  u.Product_name,
+			Category_name: u.Category_name,
+			Price:         u.Price,
+			Prod_desc:     u.Prod_desc,
+			Amount_left:   u.Amount_left,
+			Title:         u.Title,
 		})
 	}
 	return allProdArr, nil
+}
+
+func (r *ProductRepose) InsertItem(p *models.Products) (*models.Products, error) {
+	_, err := r.storage.db.Exec("INSERT INTO products (product_name, category_id, price, prod_desc, amount_left, supplier_id)\n "+
+		"VALUES (?, ?, ?, ?, ?, ?)",
+		p.Product_name,
+		p.Category_id,
+		p.Price,
+		p.Prod_desc,
+		p.Amount_left,
+		p.Supplier_id)
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
 }

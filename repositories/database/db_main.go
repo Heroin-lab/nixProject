@@ -14,9 +14,9 @@ type Storage struct {
 	prodRepository *ProductRepose
 }
 
-func New(config *Config) *Storage {
+func New(db *sql.DB) *Storage {
 	return &Storage{
-		config: config,
+		db: db,
 	}
 }
 

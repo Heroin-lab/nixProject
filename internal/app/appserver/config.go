@@ -1,9 +1,5 @@
 package appserver
 
-import (
-	"github.com/Heroin-lab/nixProject/repositories/database"
-)
-
 type Config struct {
 	BindAddress        string `toml:"bind_address"`
 	LogLevel           string `toml:"log_level"`
@@ -11,7 +7,7 @@ type Config struct {
 	RefreshSecretStr   string `toml:"refreshSecret"`
 	AccessLifetimeMin  int    `toml:"accessLifetimeMinutes"`
 	RefreshLifetimeMin int    `toml:"refreshLifetimeMinutes"`
-	Storage            *database.Config
+	DatabaseURL        string `toml:"database_url"`
 }
 
 func NewConfig() *Config {
@@ -22,6 +18,5 @@ func NewConfig() *Config {
 		RefreshSecretStr:   "refresh_secret_k",
 		AccessLifetimeMin:  5,
 		RefreshLifetimeMin: 60,
-		Storage:            database.NewConfig(),
 	}
 }

@@ -8,7 +8,7 @@ type UserRepos struct {
 	storage *Storage
 }
 
-func (r *UserRepos) Create(u *models.User) (*models.User, error) {
+func (r *UserRepos) Create(u *models.User) error {
 	u.BeforeCreate()
 	_, err := r.storage.db.Exec(
 		"INSERT INTO users (email, password) VALUES (?, ?)",
@@ -16,10 +16,9 @@ func (r *UserRepos) Create(u *models.User) (*models.User, error) {
 		u.Password,
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	return u, nil
+	return nil
 }
 
 func (r *UserRepos) GetByEmail(email string) (*models.User, error) {
