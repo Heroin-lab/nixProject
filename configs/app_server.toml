@@ -1,12 +1,12 @@
 bind_addr = ":7777"
 log_level = "debug"
-database_url = "kirill:Ya8eb2a3l@/nix_db"
+database_url = "kirill:Stud_21g@/nix_db"
 
-[Tokens]
-accessSecret  = "access_secret_k"
-refreshSecret = "refresh_secret_k"
-
-accessLifetimeMinutes  = 5
-refreshLifetimeMinutes = 60
+# [Tokens]
+# accessSecret  = "access_secret_k"
+# refreshSecret = "refresh_secret_k"
+#
+# accessLifetimeMinutes  = 5
+# refreshLifetimeMinutes = 60
 
 
