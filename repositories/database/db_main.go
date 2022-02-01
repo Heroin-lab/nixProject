@@ -7,45 +7,58 @@ import (
 )
 
 type Storage struct {
-	db             *sql.DB
-	userRepository *UserRepos
-	prodRepository *ProductRepose
+	DB             *sql.DB
+	UserRepository *UserRepos
+	ProdRepository *ProductRepose
+	SuppRepose     *SuppRepose
 }
 
 func New(db *sql.DB) *Storage {
 	return &Storage{
-		db: db,
+		DB: db,
 	}
 }
 
 func (s *Storage) Close() {
 	logger.DebugMsg("DB connection was closed!")
-	s.db.Close()
+	s.DB.Close()
 }
 
 // User repos
 func (s *Storage) User() *UserRepos {
-	if s.userRepository != nil {
-		return s.userRepository
+	if s.UserRepository != nil {
+		return s.UserRepository
 	}
 
-	s.userRepository = &UserRepos{
+	s.UserRepository = &UserRepos{
 		storage: s,
 	}
 
-	return s.userRepository
+	return s.UserRepository
 }
 
 func (s *Storage) Product() *ProductRepose {
-	if s.prodRepository != nil {
-		return s.prodRepository
+	if s.ProdRepository != nil {
+		return s.ProdRepository
 	}
 
-	s.prodRepository = &ProductRepose{
+	s.ProdRepository = &ProductRepose{
 		storage: s,
 	}
 
-	return s.prodRepository
+	return s.ProdRepository
+}
+
+func (s *Storage) Supplier() *SuppRepose {
+	if s.SuppRepose != nil {
+		return s.SuppRepose
+	}
+
+	s.SuppRepose = &SuppRepose{
+		storage: s,
+	}
+
+	return s.SuppRepose
 }
 
 //func (s *Storage) Open() error {

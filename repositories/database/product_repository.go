@@ -9,14 +9,14 @@ type ProductRepose struct {
 	storage *Storage
 }
 
-func (r *ProductRepose) GetByCategory(cat_name string) ([]*models.ForSelectProducts, error) {
+func (r *ProductRepose) GetByCategory(category string) ([]*models.ForSelectProducts, error) {
 	u := &models.ForSelectProducts{}
 
-	allProdSql, err := r.storage.db.Query("SELECT products.id, product_name, category_name, price, prod_desc, amount_left, title\n"+
+	allProdSql, err := r.storage.DB.Query("SELECT products.id, product_name, category_name, price, prod_desc, amount_left, title\n"+
 		"FROM products\n"+
 		"INNER JOIN categories c on products.category_id = c.id\n"+
 		"INNER JOIN suppliers s on products.supplier_id = s.id\n"+
-		"WHERE category_name = ?", cat_name)
+		"WHERE category_name = ?", category)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (r *ProductRepose) GetByCategory(cat_name string) ([]*models.ForSelectProdu
 }
 
 func (r *ProductRepose) InsertItem(p *models.Products) (*models.Products, error) {
-	_, err := r.storage.db.Exec("INSERT INTO products (product_name, category_id, price, prod_desc, amount_left, supplier_id)\n "+
+	_, err := r.storage.DB.Exec("INSERT INTO products (product_name, category_id, price, prod_desc, amount_left, supplier_id)\n "+
 		"VALUES (?, ?, ?, ?, ?, ?)",
 		p.Product_name,
 		p.Category_id,
@@ -70,18 +70,19 @@ func (r *ProductRepose) InsertItem(p *models.Products) (*models.Products, error)
 }
 
 func (r *ProductRepose) DeleteItem(stringToDelete string) error {
-	_, err := r.storage.db.Exec("DELETE FROM products WHERE product_name=?",
+	_, err := r.storage.DB.Exec("DELETE FROM products WHERE product_name=?",
 		stringToDelete,
 	)
 	if err != nil {
 		return err
 	}
+
 	logger.Info("Row with name '" + stringToDelete + "' was successfully deleted from PRODUCTS table!")
 	return nil
 }
 
 func (r *ProductRepose) UpdateItem(p *models.Products) error {
-	_, err := r.storage.db.Query("UPDATE products\n"+
+	rows, err := r.storage.DB.Query("UPDATE products\n"+
 		"SET product_name=?, category_id=?,\n"+
 		"price=?, prod_desc=?,\n"+
 		"amount_left=?, supplier_id=?\n"+
@@ -96,6 +97,7 @@ func (r *ProductRepose) UpdateItem(p *models.Products) error {
 	if err != nil {
 		return err
 	}
+	defer rows.Close()
 
 	logger.Info("Row in PRODUCTS table was updated! RowID=", p.Id)
 	return nil

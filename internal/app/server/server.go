@@ -11,18 +11,20 @@ import (
 )
 
 type Server struct {
-	Router         *http.ServeMux
-	Storage        *database.Storage
-	UserHandler    *handlers.UserHandler
-	ProductHandler *handlers.ProductHandler
+	Router           *http.ServeMux
+	Storage          *database.Storage
+	UserHandler      *handlers.UserHandler
+	ProductHandler   *handlers.ProductHandler
+	SuppliersHandler *handlers.SuppliersHandler
 }
 
 func NewServer(store *database.Storage) *Server {
 	s := &Server{
-		Router:         http.NewServeMux(),
-		Storage:        store,
-		ProductHandler: handlers.NewProductHandler(store),
-		UserHandler:    handlers.NewUserHandler(store),
+		Router:           http.NewServeMux(),
+		Storage:          store,
+		ProductHandler:   handlers.NewProductHandler(store),
+		UserHandler:      handlers.NewUserHandler(store),
+		SuppliersHandler: handlers.NewSuppliersHandler(store),
 	}
 
 	s.configureRouter()
@@ -72,14 +74,20 @@ func configureLogger(logLevel string) error {
 }
 
 func (s *Server) configureRouter() {
+
+	// USERS handlers
 	s.Router.HandleFunc("/register", s.UserHandler.HandleUsersCreate())
 	s.Router.HandleFunc("/login", s.UserHandler.HandleUsersLogin())
 	s.Router.HandleFunc("/change-password", s.UserHandler.HandleChangePassword())
 
+	// PRODUCTS handlers
 	s.Router.HandleFunc("/get-items-by-category", s.ProductHandler.HandleGetProductsByCategory())
 	s.Router.HandleFunc("/insert-item", s.ProductHandler.HandleInsertProduct())
 	s.Router.HandleFunc("/delete-item", s.ProductHandler.HandleDeleteProduct())
 	s.Router.HandleFunc("/update-item", s.ProductHandler.HandleUpdateProduct())
+
+	// SUPPLIERS handlers
+	s.Router.HandleFunc("/get-suppliers-by-category", s.SuppliersHandler.HandleGetSuppliersByCategory())
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
