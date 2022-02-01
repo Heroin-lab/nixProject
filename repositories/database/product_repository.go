@@ -1,6 +1,9 @@
 package database
 
-import "github.com/Heroin-lab/nixProject/repositories/models"
+import (
+	logger "github.com/Heroin-lab/heroin-logger/v3"
+	"github.com/Heroin-lab/nixProject/repositories/models"
+)
 
 type ProductRepose struct {
 	storage *Storage
@@ -9,7 +12,7 @@ type ProductRepose struct {
 func (r *ProductRepose) GetByCategory(cat_name string) ([]*models.ForSelectProducts, error) {
 	u := &models.ForSelectProducts{}
 
-	allProdSql, err := r.storage.db.Query("SELECT product_name, category_name, price, prod_desc, amount_left, title\n"+
+	allProdSql, err := r.storage.db.Query("SELECT products.id, product_name, category_name, price, prod_desc, amount_left, title\n"+
 		"FROM products\n"+
 		"INNER JOIN categories c on products.category_id = c.id\n"+
 		"INNER JOIN suppliers s on products.supplier_id = s.id\n"+
@@ -24,6 +27,7 @@ func (r *ProductRepose) GetByCategory(cat_name string) ([]*models.ForSelectProdu
 	for allProdSql.Next() {
 
 		err = allProdSql.Scan(
+			&u.Id,
 			&u.Product_name,
 			&u.Category_name,
 			&u.Price,
@@ -36,6 +40,7 @@ func (r *ProductRepose) GetByCategory(cat_name string) ([]*models.ForSelectProdu
 		}
 
 		allProdArr = append(allProdArr, &models.ForSelectProducts{
+			Id:            u.Id,
 			Product_name:  u.Product_name,
 			Category_name: u.Category_name,
 			Price:         u.Price,
@@ -59,5 +64,39 @@ func (r *ProductRepose) InsertItem(p *models.Products) (*models.Products, error)
 	if err != nil {
 		return nil, err
 	}
+
+	logger.Info("Row with name '" + p.Product_name + "' was successfully added to PRODUCT table!")
 	return p, nil
+}
+
+func (r *ProductRepose) DeleteItem(stringToDelete string) error {
+	_, err := r.storage.db.Exec("DELETE FROM products WHERE product_name=?",
+		stringToDelete,
+	)
+	if err != nil {
+		return err
+	}
+	logger.Info("Row with name '" + stringToDelete + "' was successfully deleted from PRODUCTS table!")
+	return nil
+}
+
+func (r *ProductRepose) UpdateItem(p *models.Products) error {
+	_, err := r.storage.db.Query("UPDATE products\n"+
+		"SET product_name=?, category_id=?,\n"+
+		"price=?, prod_desc=?,\n"+
+		"amount_left=?, supplier_id=?\n"+
+		"WHERE id=?",
+		p.Product_name,
+		p.Category_id,
+		p.Price,
+		p.Prod_desc,
+		p.Amount_left,
+		p.Supplier_id,
+		p.Id)
+	if err != nil {
+		return err
+	}
+
+	logger.Info("Row in PRODUCTS table was updated! RowID=", p.Id)
+	return nil
 }

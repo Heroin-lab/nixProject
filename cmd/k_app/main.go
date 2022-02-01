@@ -4,7 +4,7 @@ import (
 	"flag"
 	"github.com/BurntSushi/toml"
 	logger "github.com/Heroin-lab/heroin-logger/v3"
-	"github.com/Heroin-lab/nixProject/internal/app/appserver"
+	"github.com/Heroin-lab/nixProject/internal/app/server"
 )
 
 var (
@@ -18,13 +18,13 @@ func init() {
 func main() {
 	flag.Parse()
 
-	servConf := appserver.NewConfig()
+	servConf := server.NewConfig()
 	_, err := toml.DecodeFile(confPath, servConf)
 	if err != nil {
 		logger.Fatal("Config file error", err)
 	}
 
-	if err := appserver.Start(servConf); err != nil {
+	if err := server.Start(servConf); err != nil {
 		logger.Fatal("Server starter error", err)
 	}
 
