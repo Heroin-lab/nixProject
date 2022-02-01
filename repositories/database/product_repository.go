@@ -2,7 +2,7 @@ package database
 
 import (
 	logger "github.com/Heroin-lab/heroin-logger/v3"
-	"github.com/Heroin-lab/nixProject/repositories/models"
+	"github.com/Heroin-lab/nixProject/models"
 )
 
 type ProductRepose struct {

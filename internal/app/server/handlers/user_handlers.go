@@ -3,8 +3,8 @@ package handlers
 import (
 	"encoding/json"
 	logger "github.com/Heroin-lab/heroin-logger/v3"
+	"github.com/Heroin-lab/nixProject/models"
 	"github.com/Heroin-lab/nixProject/repositories/database"
-	"github.com/Heroin-lab/nixProject/repositories/models"
 	"github.com/Heroin-lab/nixProject/services"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"

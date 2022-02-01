@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
+	"github.com/Heroin-lab/nixProject/models"
 	"github.com/Heroin-lab/nixProject/repositories/database"
-	"github.com/Heroin-lab/nixProject/repositories/models"
 	"github.com/Heroin-lab/nixProject/services"
 	"net/http"
 )
