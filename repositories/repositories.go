@@ -1,13 +1,13 @@
 package repositories
 
 import (
-	"github.com/Heroin-lab/nixProject/repositories/models"
+	"github.com/Heroin-lab/nixProject/models"
 )
 
 type UserRepositoryInterface interface {
-	Create(u *models.User) (*models.User, error)
+	Create(u *models.User) error
 	GetByEmail(email string) (*models.User, error)
-	UpdateByEmail(u *models.User)
+	UpdatePassword(u *models.User)
 }
 type SuppliersRepositoryInterface interface {
 	GetByName(name string) models.Suppliers

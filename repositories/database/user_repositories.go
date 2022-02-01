@@ -1,14 +1,15 @@
 package database
 
 import (
-	"github.com/Heroin-lab/nixProject/repositories/models"
+	logger "github.com/Heroin-lab/heroin-logger/v3"
+	"github.com/Heroin-lab/nixProject/models"
 )
 
 type UserRepos struct {
 	storage *Storage
 }
 
-func (r *UserRepos) Create(u *models.User) (*models.User, error) {
+func (r *UserRepos) Create(u *models.User) error {
 	u.BeforeCreate()
 	_, err := r.storage.db.Exec(
 		"INSERT INTO users (email, password) VALUES (?, ?)",
@@ -16,10 +17,9 @@ func (r *UserRepos) Create(u *models.User) (*models.User, error) {
 		u.Password,
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	return u, nil
+	return nil
 }
 
 func (r *UserRepos) GetByEmail(email string) (*models.User, error) {
@@ -36,30 +36,18 @@ func (r *UserRepos) GetByEmail(email string) (*models.User, error) {
 	return u, nil
 }
 
-//func GetProfile(w http.ResponseWriter, r *http.Request) {
-//	switch r.Method {
-//	case "GET":
-//		claims, err := ValidateToken(GetTokenFromBearerString(r.Header.Get("Authorization")), refreshSecret)
-//		if err != nil {
-//			http.Error(w, err.Error(), http.StatusUnauthorized)
-//			return
-//		}
-//
-//		user, err := NewUserRepository().GetUserByID(claims.ID)
-//		if err != nil {
-//			http.Error(w, "User does not exist", http.StatusBadRequest)
-//			return
-//		}
-//
-//		resp := UserResponse{
-//			ID:    user.ID,
-//			Name:  user.Name,
-//			Email: user.Email,
-//		}
-//
-//		w.WriteHeader(http.StatusOK)
-//		json.NewEncoder(w).Encode(resp)
-//	default:
-//		http.Error(w, "Only GET method is allowed", http.StatusMethodNotAllowed)
-//	}
-//}
+func (r *UserRepos) UpdatePassword(u *models.ChangePassModel) error {
+	encPass, err := models.EncryptString(u.NewPass)
+	if err != nil {
+		return err
+	}
+
+	_, err = r.storage.db.Exec("UPDATE users SET password=? WHERE email=?",
+		encPass,
+		u.Email)
+	if err != nil {
+		return err
+	}
+	logger.Info("User with email='" + u.Email + "' was successfully change the password!")
+	return nil
+}
