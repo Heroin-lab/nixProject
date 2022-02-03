@@ -11,7 +11,7 @@ type UserRepos struct {
 
 func (r *UserRepos) Create(u *models.User) error {
 	u.BeforeCreate()
-	_, err := r.storage.db.Exec(
+	_, err := r.storage.DB.Exec(
 		"INSERT INTO users (email, password) VALUES (?, ?)",
 		u.Email,
 		u.Password,
@@ -24,7 +24,7 @@ func (r *UserRepos) Create(u *models.User) error {
 
 func (r *UserRepos) GetByEmail(email string) (*models.User, error) {
 	u := &models.User{}
-	if err := r.storage.db.QueryRow(
+	if err := r.storage.DB.QueryRow(
 		"SELECT id, email, password FROM users WHERE email = ?", email).Scan(
 		&u.Id,
 		&u.Email,
@@ -42,7 +42,7 @@ func (r *UserRepos) UpdatePassword(u *models.ChangePassModel) error {
 		return err
 	}
 
-	_, err = r.storage.db.Exec("UPDATE users SET password=? WHERE email=?",
+	_, err = r.storage.DB.Exec("UPDATE users SET password=? WHERE email=?",
 		encPass,
 		u.Email)
 	if err != nil {

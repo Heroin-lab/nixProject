@@ -1,10 +1,8 @@
 package middleware
 
-import "net/http"
-
-type Middleware interface {
-	PostCheck(next http.HandlerFunc) http.HandlerFunc
-}
+import (
+	"net/http"
+)
 
 func PostCheck(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

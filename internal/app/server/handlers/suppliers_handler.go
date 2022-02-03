@@ -9,19 +9,19 @@ import (
 	"net/http"
 )
 
-type ProductHandler struct {
+type SuppliersHandler struct {
 	storage *database.Storage
 }
 
-func NewProductHandler(st *database.Storage) *ProductHandler {
-	return &ProductHandler{
+func NewSuppliersHandler(st *database.Storage) *SuppliersHandler {
+	return &SuppliersHandler{
 		storage: st,
 	}
 }
 
-func (h *ProductHandler) HandleGetProductsByCategory() http.HandlerFunc {
+func (h *SuppliersHandler) HandleGetSuppliersByCategory() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := new(models.CategoryRequest)
+		req := new(models.Suppliers)
 
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			logger.Error("Server respond with bad request status!")
@@ -29,19 +29,18 @@ func (h *ProductHandler) HandleGetProductsByCategory() http.HandlerFunc {
 			return
 		}
 
-		getItems, err := h.storage.Product().GetByCategory(req.Category_name)
+		itemSet, err := h.storage.Supplier().GetSuppliersByCategory(req.Type)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusConflict)
-			return
+			services.Error(w, r, http.StatusNotFound, err)
 		}
 
-		services.Respond(w, r, 200, getItems)
+		services.Respond(w, r, 200, itemSet)
 	}
 }
 
-func (h *ProductHandler) HandleInsertProduct() http.HandlerFunc {
+func (h *SuppliersHandler) HandleAddSupplier() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req = new(models.Products)
+		req := new(models.Suppliers)
 
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			logger.Error("Server respond with bad request status!")
@@ -49,19 +48,19 @@ func (h *ProductHandler) HandleInsertProduct() http.HandlerFunc {
 			return
 		}
 
-		insertItem, err := h.storage.Product().InsertItem(req)
+		newItem, err := h.storage.Supplier().AddSupplier(req)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusConflict)
+			services.Error(w, r, http.StatusUnprocessableEntity, err)
 			return
 		}
 
-		services.Respond(w, r, 200, insertItem)
+		services.Respond(w, r, http.StatusCreated, newItem)
 	}
 }
 
-func (h *ProductHandler) HandleDeleteProduct() http.HandlerFunc {
+func (h *SuppliersHandler) HandleDeleteSupplier() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req = new(models.Products)
+		req := new(models.Suppliers)
 
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			logger.Error("Server respond with bad request status!")
@@ -69,19 +68,18 @@ func (h *ProductHandler) HandleDeleteProduct() http.HandlerFunc {
 			return
 		}
 
-		err := h.storage.Product().DeleteItem(req.Product_name)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusConflict)
+		if err := h.storage.Supplier().DeleteSupplier(req.Id); err != nil {
+			services.Error(w, r, http.StatusUnprocessableEntity, err)
 			return
 		}
 
-		services.Respond(w, r, 200, "Delete was successfully made")
+		services.Respond(w, r, http.StatusOK, "Supplier with id='"+req.Id+"' was successfully deleted!")
 	}
 }
 
-func (h *ProductHandler) HandleUpdateProduct() http.HandlerFunc {
+func (h *SuppliersHandler) HandleUpdateSupplier() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req = new(models.Products)
+		req := new(models.Suppliers)
 
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			logger.Error("Server respond with bad request status!")
@@ -89,12 +87,12 @@ func (h *ProductHandler) HandleUpdateProduct() http.HandlerFunc {
 			return
 		}
 
-		err := h.storage.Product().UpdateItem(req)
+		err := h.storage.Supplier().UpdateSupplier(req)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusConflict)
+			services.Error(w, r, http.StatusUnprocessableEntity, err)
 			return
 		}
 
-		services.Respond(w, r, 200, "Update was successfully made")
+		services.Respond(w, r, http.StatusOK, "Supplier with id='"+req.Id+"' was successfully updated!")
 	}
 }
