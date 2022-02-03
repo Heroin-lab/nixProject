@@ -10,8 +10,7 @@ import (
 )
 
 type SuppliersHandler struct {
-	resService *services.RespondService
-	storage    *database.Storage
+	storage *database.Storage
 }
 
 func NewSuppliersHandler(st *database.Storage) *SuppliersHandler {
@@ -22,24 +21,78 @@ func NewSuppliersHandler(st *database.Storage) *SuppliersHandler {
 
 func (h *SuppliersHandler) HandleGetSuppliersByCategory() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-			return
-		}
-
 		req := new(models.Suppliers)
 
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			logger.Error("Server respond with bad request status!")
-			h.resService.Error(w, r, http.StatusBadRequest, err)
+			services.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
 
-		result, err := h.storage.Supplier().GetSuppliersByCategory(req.Type)
+		itemSet, err := h.storage.Supplier().GetSuppliersByCategory(req.Type)
 		if err != nil {
-			h.resService.Error(w, r, http.StatusNotFound, err)
+			services.Error(w, r, http.StatusNotFound, err)
 		}
 
-		h.resService.Respond(w, r, 200, result)
+		services.Respond(w, r, 200, itemSet)
+	}
+}
+
+func (h *SuppliersHandler) HandleAddSupplier() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := new(models.Suppliers)
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			logger.Error("Server respond with bad request status!")
+			services.Error(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		newItem, err := h.storage.Supplier().AddSupplier(req)
+		if err != nil {
+			services.Error(w, r, http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		services.Respond(w, r, http.StatusCreated, newItem)
+	}
+}
+
+func (h *SuppliersHandler) HandleDeleteSupplier() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := new(models.Suppliers)
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			logger.Error("Server respond with bad request status!")
+			services.Error(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		if err := h.storage.Supplier().DeleteSupplier(req.Id); err != nil {
+			services.Error(w, r, http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		services.Respond(w, r, http.StatusOK, "Supplier with id='"+req.Id+"' was successfully deleted!")
+	}
+}
+
+func (h *SuppliersHandler) HandleUpdateSupplier() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := new(models.Suppliers)
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			logger.Error("Server respond with bad request status!")
+			services.Error(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		err := h.storage.Supplier().UpdateSupplier(req)
+		if err != nil {
+			services.Error(w, r, http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		services.Respond(w, r, http.StatusOK, "Supplier with id='"+req.Id+"' was successfully updated!")
 	}
 }

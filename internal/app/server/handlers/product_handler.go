@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	logger "github.com/Heroin-lab/heroin-logger/v3"
 	"github.com/Heroin-lab/nixProject/models"
 	"github.com/Heroin-lab/nixProject/repositories/database"
 	"github.com/Heroin-lab/nixProject/services"
@@ -9,8 +10,7 @@ import (
 )
 
 type ProductHandler struct {
-	resService *services.RespondService
-	storage    *database.Storage
+	storage *database.Storage
 }
 
 func NewProductHandler(st *database.Storage) *ProductHandler {
@@ -21,15 +21,11 @@ func NewProductHandler(st *database.Storage) *ProductHandler {
 
 func (h *ProductHandler) HandleGetProductsByCategory() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-			return
-		}
-
-		var req = new(models.CategoryRequest)
+		req := new(models.CategoryRequest)
 
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			logger.Error("Server respond with bad request status!")
+			services.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
 
@@ -39,21 +35,17 @@ func (h *ProductHandler) HandleGetProductsByCategory() http.HandlerFunc {
 			return
 		}
 
-		h.resService.Respond(w, r, 200, getItems)
+		services.Respond(w, r, 200, getItems)
 	}
 }
 
 func (h *ProductHandler) HandleInsertProduct() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-			return
-		}
-
 		var req = new(models.Products)
 
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			logger.Error("Server respond with bad request status!")
+			services.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
 
@@ -63,21 +55,17 @@ func (h *ProductHandler) HandleInsertProduct() http.HandlerFunc {
 			return
 		}
 
-		h.resService.Respond(w, r, 200, insertItem)
+		services.Respond(w, r, 200, insertItem)
 	}
 }
 
 func (h *ProductHandler) HandleDeleteProduct() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-			return
-		}
-
 		var req = new(models.Products)
 
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			logger.Error("Server respond with bad request status!")
+			services.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
 
@@ -87,21 +75,17 @@ func (h *ProductHandler) HandleDeleteProduct() http.HandlerFunc {
 			return
 		}
 
-		h.resService.Respond(w, r, 200, "Delete was successfully made")
+		services.Respond(w, r, 200, "Delete was successfully made")
 	}
 }
 
 func (h *ProductHandler) HandleUpdateProduct() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-			return
-		}
-
 		var req = new(models.Products)
 
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			logger.Error("Server respond with bad request status!")
+			services.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
 
@@ -111,6 +95,6 @@ func (h *ProductHandler) HandleUpdateProduct() http.HandlerFunc {
 			return
 		}
 
-		h.resService.Respond(w, r, 200, "Update was successfully made")
+		services.Respond(w, r, 200, "Update was successfully made")
 	}
 }

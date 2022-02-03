@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	logger "github.com/Heroin-lab/heroin-logger/v3"
 	"github.com/Heroin-lab/nixProject/internal/app/server/handlers"
+	"github.com/Heroin-lab/nixProject/middleware"
 	"github.com/Heroin-lab/nixProject/repositories/database"
 
 	"net/http"
@@ -76,18 +77,25 @@ func configureLogger(logLevel string) error {
 func (s *Server) configureRouter() {
 
 	// USERS handlers
-	s.Router.HandleFunc("/register", s.UserHandler.HandleUsersCreate())
-	s.Router.HandleFunc("/login", s.UserHandler.HandleUsersLogin())
-	s.Router.HandleFunc("/change-password", s.UserHandler.HandleChangePassword())
+	s.Router.HandleFunc("/register", middleware.PostCheck(s.UserHandler.HandleUsersCreate()))
+	s.Router.HandleFunc("/login", middleware.PostCheck(s.UserHandler.HandleUsersLogin()))
+	s.Router.HandleFunc("/change-password", middleware.PostCheck(s.UserHandler.HandleChangePassword()))
 
 	// PRODUCTS handlers
-	s.Router.HandleFunc("/get-items-by-category", s.ProductHandler.HandleGetProductsByCategory())
-	s.Router.HandleFunc("/insert-item", s.ProductHandler.HandleInsertProduct())
-	s.Router.HandleFunc("/delete-item", s.ProductHandler.HandleDeleteProduct())
-	s.Router.HandleFunc("/update-item", s.ProductHandler.HandleUpdateProduct())
+	s.Router.HandleFunc("/get-items-by-category", middleware.PostCheck(
+		s.ProductHandler.HandleGetProductsByCategory()))
+
+	s.Router.HandleFunc("/insert-item", middleware.PostCheck(s.ProductHandler.HandleInsertProduct()))
+	s.Router.HandleFunc("/delete-item", middleware.PostCheck(s.ProductHandler.HandleDeleteProduct()))
+	s.Router.HandleFunc("/update-item", middleware.PostCheck(s.ProductHandler.HandleUpdateProduct()))
 
 	// SUPPLIERS handlers
-	s.Router.HandleFunc("/get-suppliers-by-category", s.SuppliersHandler.HandleGetSuppliersByCategory())
+	s.Router.HandleFunc("/get-suppliers-by-category", middleware.PostCheck(
+		s.SuppliersHandler.HandleGetSuppliersByCategory()))
+
+	s.Router.HandleFunc("/add-supplier", middleware.PostCheck(s.SuppliersHandler.HandleAddSupplier()))
+	s.Router.HandleFunc("/delete-supplier", middleware.PostCheck(s.SuppliersHandler.HandleDeleteSupplier()))
+	s.Router.HandleFunc("/update-supplier", middleware.PostCheck(s.SuppliersHandler.HandleUpdateSupplier()))
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {

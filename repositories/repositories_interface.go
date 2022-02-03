@@ -18,7 +18,7 @@ type ProductsRepositoryInterface interface {
 
 type SuppliersRepositoryInterface interface {
 	GetByName(name string) models.Suppliers
-	Insert(supplier *models.Suppliers) models.Suppliers
+	AddSupplier(supplier *models.Suppliers) models.Suppliers
 	DeleteSupplier(name string) models.Suppliers
 	Update(supplier *models.Suppliers) models.Suppliers
 }
