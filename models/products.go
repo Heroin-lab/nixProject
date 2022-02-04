@@ -11,11 +11,12 @@ type Products struct {
 }
 
 type ForSelectProducts struct {
-	Id            int
+	Id            string
 	Product_name  string
 	Category_name string
 	Price         string
 	Prod_desc     string
 	Amount_left   int
 	Title         string
+	Quantity      int
 }

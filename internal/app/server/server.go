@@ -17,6 +17,7 @@ type Server struct {
 	UserHandler      *handlers.UserHandler
 	ProductHandler   *handlers.ProductHandler
 	SuppliersHandler *handlers.SuppliersHandler
+	OrderHandler     *handlers.OrderHandler
 }
 
 func NewServer(store *database.Storage) *Server {
@@ -26,6 +27,7 @@ func NewServer(store *database.Storage) *Server {
 		ProductHandler:   handlers.NewProductHandler(store),
 		UserHandler:      handlers.NewUserHandler(store),
 		SuppliersHandler: handlers.NewSuppliersHandler(store),
+		OrderHandler:     handlers.NewOrderHandler(store),
 	}
 
 	s.configureRouter()
@@ -61,6 +63,7 @@ func newDB(databaseURL string) (*sql.DB, error) {
 	}
 	logger.DebugMsg("DB was successfully connected")
 
+	db.SetConnMaxIdleTime(time.Minute * 3)
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
@@ -75,7 +78,6 @@ func configureLogger(logLevel string) error {
 }
 
 func (s *Server) configureRouter() {
-
 	// USERS handlers
 	s.Router.HandleFunc("/register", middleware.PostCheck(s.UserHandler.HandleUsersCreate()))
 	s.Router.HandleFunc("/login", middleware.PostCheck(s.UserHandler.HandleUsersLogin()))
@@ -96,6 +98,9 @@ func (s *Server) configureRouter() {
 	s.Router.HandleFunc("/add-supplier", middleware.PostCheck(s.SuppliersHandler.HandleAddSupplier()))
 	s.Router.HandleFunc("/delete-supplier", middleware.PostCheck(s.SuppliersHandler.HandleDeleteSupplier()))
 	s.Router.HandleFunc("/update-supplier", middleware.PostCheck(s.SuppliersHandler.HandleUpdateSupplier()))
+
+	// ORDERS handlers
+	s.Router.HandleFunc("/get-all-user-orders", middleware.PostCheck(s.OrderHandler.HandleGetAllUserOrders()))
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {

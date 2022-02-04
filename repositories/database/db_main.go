@@ -11,6 +11,7 @@ type Storage struct {
 	UserRepository *UserRepos
 	ProdRepository *ProductRepose
 	SuppRepose     *SuppRepose
+	OrderRepose    *OrderRepose
 }
 
 func New(db *sql.DB) *Storage {
@@ -59,6 +60,18 @@ func (s *Storage) Supplier() *SuppRepose {
 	}
 
 	return s.SuppRepose
+}
+
+func (s *Storage) Order() *OrderRepose {
+	if s.SuppRepose != nil {
+		return s.OrderRepose
+	}
+
+	s.OrderRepose = &OrderRepose{
+		storage: s,
+	}
+
+	return s.OrderRepose
 }
 
 //func (s *Storage) Open() error {
