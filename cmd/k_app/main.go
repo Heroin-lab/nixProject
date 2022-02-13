@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/BurntSushi/toml"
 	logger "github.com/Heroin-lab/heroin-logger/v3"
+	"github.com/Heroin-lab/nixProject/configs"
 	"github.com/Heroin-lab/nixProject/internal/app/server"
 )
 
@@ -18,7 +19,7 @@ func init() {
 func main() {
 	flag.Parse()
 
-	servConf := server.NewConfig()
+	servConf := configs.NewConfig()
 	_, err := toml.DecodeFile(confPath, servConf)
 	if err != nil {
 		logger.Fatal("Config file error", err)

@@ -25,10 +25,30 @@ func (r *UserRepos) Create(u *models.User) error {
 func (r *UserRepos) GetByEmail(email string) (*models.User, error) {
 	u := &models.User{}
 	if err := r.storage.DB.QueryRow(
-		"SELECT id, email, password FROM users WHERE email = ?", email).Scan(
+		"SELECT users.id, email, password, role_name FROM users\n"+
+			"INNER JOIN users_roles ur on users.role = ur.id\n"+
+			"WHERE email = ?", email).Scan(
 		&u.Id,
 		&u.Email,
 		&u.Password,
+		&u.Role,
+	); err != nil {
+		return nil, err
+	}
+
+	return u, nil
+}
+
+func (r *UserRepos) GetById(id int) (*models.User, error) {
+	u := &models.User{}
+	if err := r.storage.DB.QueryRow(
+		"SELECT users.id, email, password, role_name FROM users\n"+
+			"INNER JOIN users_roles ur on users.role = ur.id\n"+
+			"WHERE users.id = ?", id).Scan(
+		&u.Id,
+		&u.Email,
+		&u.Password,
+		&u.Role,
 	); err != nil {
 		return nil, err
 	}

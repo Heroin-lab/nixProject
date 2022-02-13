@@ -38,3 +38,43 @@ func (h *OrderHandler) HandleGetAllUserOrders() http.HandlerFunc {
 		services.Respond(w, r, 200, userOrders)
 	}
 }
+
+func (h *OrderHandler) HandleAddOrder() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := new(models.OrderForInsert)
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			logger.Error("Server respond with bad request status!")
+			services.Error(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		err := h.storage.Order().AddOrder(req)
+		if err != nil {
+			services.Error(w, r, http.StatusConflict, err)
+			return
+		}
+
+		services.Respond(w, r, 200, "Order was successfully added!")
+	}
+}
+
+func (h *OrderHandler) HandleDeleteOrder() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := new(models.OrderForInsert)
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			logger.Error("Server respond with bad request status!")
+			services.Error(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		err := h.storage.Order().DeleteOrder(req.Id)
+		if err != nil {
+			services.Error(w, r, http.StatusConflict, err)
+			return
+		}
+
+		services.Respond(w, r, 200, "Order was successfully deleted!")
+	}
+}

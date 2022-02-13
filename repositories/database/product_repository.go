@@ -12,11 +12,11 @@ type ProductRepose struct {
 func (r *ProductRepose) GetByCategory(category string) ([]*models.ForSelectProducts, error) {
 	u := &models.ForSelectProducts{}
 
-	allProdSql, err := r.storage.DB.Query("SELECT products.id, product_name, category_name, price, prod_desc, amount_left, title\n"+
+	allProdSql, err := r.storage.DB.Query("SELECT products.id, product_name, product_type, price, img, supp_name\n"+
 		"FROM products\n"+
-		"INNER JOIN categories c on products.category_id = c.id\n"+
+		"INNER JOIN products_types c on products.type_id = c.id\n"+
 		"INNER JOIN suppliers s on products.supplier_id = s.id\n"+
-		"WHERE category_name = ?", category)
+		"WHERE product_type = ?", category)
 	if err != nil {
 		return nil, err
 	}
@@ -29,37 +29,34 @@ func (r *ProductRepose) GetByCategory(category string) ([]*models.ForSelectProdu
 		err = allProdSql.Scan(
 			&u.Id,
 			&u.Product_name,
-			&u.Category_name,
+			&u.Prod_type_name,
 			&u.Price,
-			&u.Prod_desc,
-			&u.Amount_left,
-			&u.Title,
+			&u.Img,
+			&u.Supplier,
 		)
 		if err != nil {
 			return nil, err
 		}
 
 		allProdArr = append(allProdArr, &models.ForSelectProducts{
-			Id:            u.Id,
-			Product_name:  u.Product_name,
-			Category_name: u.Category_name,
-			Price:         u.Price,
-			Prod_desc:     u.Prod_desc,
-			Amount_left:   u.Amount_left,
-			Title:         u.Title,
+			Id:             u.Id,
+			Product_name:   u.Product_name,
+			Prod_type_name: u.Prod_type_name,
+			Price:          u.Price,
+			Img:            u.Img,
+			Supplier:       u.Supplier,
 		})
 	}
 	return allProdArr, nil
 }
 
 func (r *ProductRepose) InsertItem(p *models.Products) (*models.Products, error) {
-	_, err := r.storage.DB.Exec("INSERT INTO products (product_name, category_id, price, prod_desc, amount_left, supplier_id)\n "+
-		"VALUES (?, ?, ?, ?, ?, ?)",
+	_, err := r.storage.DB.Exec("INSERT INTO products (product_name, type_id, price, img, supplier_id)\n "+
+		"VALUES (?, ?, ?, ?, ?)",
 		p.Product_name,
-		p.Category_id,
+		p.Type_id,
 		p.Price,
-		p.Prod_desc,
-		p.Amount_left,
+		p.Img,
 		p.Supplier_id)
 	if err != nil {
 		return nil, err
@@ -70,7 +67,7 @@ func (r *ProductRepose) InsertItem(p *models.Products) (*models.Products, error)
 }
 
 func (r *ProductRepose) DeleteItem(stringToDelete string) error {
-	_, err := r.storage.DB.Exec("DELETE FROM products WHERE product_name=?",
+	_, err := r.storage.DB.Exec("DELETE FROM products WHERE id=?",
 		stringToDelete,
 	)
 	if err != nil {
@@ -83,15 +80,14 @@ func (r *ProductRepose) DeleteItem(stringToDelete string) error {
 
 func (r *ProductRepose) UpdateItem(p *models.Products) error {
 	rows, err := r.storage.DB.Query("UPDATE products\n"+
-		"SET product_name=?, category_id=?,\n"+
-		"price=?, prod_desc=?,\n"+
-		"amount_left=?, supplier_id=?\n"+
+		"SET product_name=?, type_id=?,\n"+
+		"price=?, img=?,\n"+
+		"supplier_id=?\n"+
 		"WHERE id=?",
 		p.Product_name,
-		p.Category_id,
+		p.Type_id,
 		p.Price,
-		p.Prod_desc,
-		p.Amount_left,
+		p.Img,
 		p.Supplier_id,
 		p.Id)
 	if err != nil {

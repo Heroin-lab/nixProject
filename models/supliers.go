@@ -1,8 +1,15 @@
 package models
 
 type Suppliers struct {
-	Id           string `json:"id"`
-	Title        string `json:"title"`
-	Type         string `json:"type"`
-	Working_time string `json:"working_time"`
+	Id    string `json:"id"`
+	Name  string `json:"name"`
+	Type  string `json:"type"`
+	Image string `json:"image"`
+	WorkingHours
+	Menu []Products `json:"menu"`
+}
+
+type WorkingHours struct {
+	Opening string `json:"opening"`
+	Closing string `json:"closing"`
 }
