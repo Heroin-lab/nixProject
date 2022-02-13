@@ -12,7 +12,7 @@ type SuppRepose struct {
 func (r *SuppRepose) GetSuppliersByCategory(category string) ([]*models.Suppliers, error) {
 	suppModel := &models.Suppliers{}
 
-	rows, err := r.storage.DB.Query("SELECT suppliers.id, supp_name, type_name, open_time, close_time\n"+
+	rows, err := r.storage.DB.Query("SELECT suppliers.id, supp_name, type_name, image, open_time, close_time\n"+
 		"FROM suppliers\n"+
 		"INNER JOIN suppliers_types st on suppliers.type_id = st.id\n"+
 		"WHERE type_name=?", category)
@@ -28,6 +28,7 @@ func (r *SuppRepose) GetSuppliersByCategory(category string) ([]*models.Supplier
 			&suppModel.Id,
 			&suppModel.Name,
 			&suppModel.Type,
+			&suppModel.Image,
 			&suppModel.Opening,
 			&suppModel.Closing,
 		)
@@ -36,9 +37,10 @@ func (r *SuppRepose) GetSuppliersByCategory(category string) ([]*models.Supplier
 		}
 
 		rowsArr = append(rowsArr, &models.Suppliers{
-			Id:   suppModel.Id,
-			Name: suppModel.Name,
-			Type: suppModel.Type,
+			Id:    suppModel.Id,
+			Name:  suppModel.Name,
+			Type:  suppModel.Type,
+			Image: suppModel.Image,
 			WorkingHours: models.WorkingHours{
 				Opening: suppModel.Opening,
 				Closing: suppModel.Closing,
