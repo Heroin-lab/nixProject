@@ -8,6 +8,7 @@ type User struct {
 	Id       int
 	Email    string
 	Password string
+	Role     string
 }
 
 func (u *User) BeforeCreate() error {

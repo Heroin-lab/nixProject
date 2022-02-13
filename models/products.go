@@ -1,21 +1,30 @@
 package models
 
 type Products struct {
-	Id           int    `json:"id"`
-	Product_name string `json:"product_name"`
-	Category_id  int    `json:"category_id"`
-	Price        string `json:"price"`
-	Prod_desc    string `json:"prod_desc"`
-	Amount_left  int    `json:"amount_left"`
-	Supplier_id  int    `json:"supplier_id"`
+	Id           int     `json:"id"`
+	Product_name string  `json:"product_name"`
+	Type_id      int     `json:"type_id"`
+	Price        float64 `json:"price"`
+	Img          string  `json:"img"`
+	Supplier_id  int     `json:"supplier_id"`
 }
 
 type ForSelectProducts struct {
-	Id            int
-	Product_name  string
-	Category_name string
-	Price         string
-	Prod_desc     string
-	Amount_left   int
-	Title         string
+	Id             string
+	Product_name   string
+	Prod_type_name string
+	Price          float64
+	Img            string
+	Supplier       string
+	Quantity       int
 }
+
+//
+//type Product struct {
+//	Id          int      `json:"id"`
+//	Name        string   `json:"name"`
+//	Price       float64  `json:"price"`
+//	Image       string   `json:"image"`
+//	Type        string   `json:"type"`
+//	Ingredients []string `json:"ingredients"`
+//}

@@ -1,4 +1,4 @@
-package server
+package configs
 
 type Config struct {
 	BindAddress        string `toml:"bind_address"`

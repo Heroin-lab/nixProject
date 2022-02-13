@@ -5,7 +5,6 @@ go 1.17
 require (
 	github.com/BurntSushi/toml v0.4.1
 	github.com/Heroin-lab/heroin-logger/v3 v3.0.3
-	github.com/gorilla/mux v1.8.0
 )
 
 require (
@@ -13,4 +12,3 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	golang.org/x/crypto v0.0.0-20220112180741-5e0467b6c7ce
 )
-
