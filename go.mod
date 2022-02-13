@@ -12,3 +12,5 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	golang.org/x/crypto v0.0.0-20220112180741-5e0467b6c7ce
 )
+
+require github.com/rs/cors v1.8.2

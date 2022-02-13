@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	logger "github.com/Heroin-lab/heroin-logger/v3"
 	"net/http"
 )
 
@@ -17,6 +18,7 @@ func GetCheck(next http.HandlerFunc) http.HandlerFunc {
 func PostCheck(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
+			logger.Info("Request has been send with wrong method!")
 			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 			return
 		}

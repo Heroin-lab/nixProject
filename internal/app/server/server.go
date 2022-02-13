@@ -7,7 +7,7 @@ import (
 	"github.com/Heroin-lab/nixProject/internal/app/server/handlers"
 	"github.com/Heroin-lab/nixProject/middleware"
 	"github.com/Heroin-lab/nixProject/repositories/database"
-
+	"github.com/rs/cors"
 	"net/http"
 	"time"
 )
@@ -46,11 +46,22 @@ func Start(config *configs.Config) error {
 		return err
 	}
 	defer sqlDB.Close()
+
 	store := database.New(sqlDB)
 	srv := NewServer(store)
 
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:7777", "http://localhost:63343"},
+		AllowedMethods:   []string{"POST", "GET", "DELETE", "PATCH"},
+		AllowCredentials: true,
+		// Enable Debugging for testing, consider disabling in production
+		Debug: true,
+	})
+
+	handler := c.Handler(srv.Router)
+
 	logger.Info("Starting app server")
-	return http.ListenAndServe(config.BindAddress, srv)
+	return http.ListenAndServe(config.BindAddress, handler)
 }
 
 func newDB(databaseURL string) (*sql.DB, error) {
