@@ -1,0 +1,301 @@
+-- MySQL dump 10.13  Distrib 8.0.28, for Linux (x86_64)
+--
+-- Host: 127.0.0.1    Database: nix_db
+-- ------------------------------------------------------
+-- Server version	8.0.28-0ubuntu0.20.04.3
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `ingredients`
+--
+
+DROP TABLE IF EXISTS `ingredients`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ingredients` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ingredients_name_uindex` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ingredients`
+--
+
+LOCK TABLES `ingredients` WRITE;
+/*!40000 ALTER TABLE `ingredients` DISABLE KEYS */;
+INSERT INTO `ingredients` VALUES (29,'Bacon'),(28,'Basil'),(24,'Bavarian sausages'),(14,'BBQ sauce'),(11,'Butter'),(5,'Caramelized onions'),(1,'Cheese'),(27,'Cheese cheddar'),(17,'Chicken'),(16,'Corn'),(15,'Cottage Cheese'),(36,'Cream cheese'),(35,'Cucumber'),(4,'Flour'),(25,'Garlic'),(38,'Japanese tamago'),(12,'Mayo'),(8,'Meat'),(30,'Milk'),(2,'Mozarella'),(21,'Mushrooms'),(34,'Nori'),(19,'Onion'),(32,'Onion rings'),(13,'Original sauce'),(3,'Pasta'),(6,'Peperoni'),(31,'Pineapple'),(26,'Potatoes'),(23,'Rice'),(33,'Salmon'),(7,'Strawberry'),(20,'Sugar'),(9,'Tomatoes'),(37,'Unagi sauce');
+/*!40000 ALTER TABLE `ingredients` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ingredients_to_products`
+--
+
+DROP TABLE IF EXISTS `ingredients_to_products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ingredients_to_products` (
+  `product_id` int NOT NULL,
+  `ingredient_id` int NOT NULL,
+  KEY `ingredients_to_products_ingredients_id_fk` (`ingredient_id`),
+  KEY `ingredients_to_products_products_id_fk` (`product_id`),
+  CONSTRAINT `ingredients_to_products_ingredients_id_fk` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`id`),
+  CONSTRAINT `ingredients_to_products_products_id_fk` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ingredients_to_products`
+--
+
+LOCK TABLES `ingredients_to_products` WRITE;
+/*!40000 ALTER TABLE `ingredients_to_products` DISABLE KEYS */;
+INSERT INTO `ingredients_to_products` VALUES (4,1),(1,2),(19,4),(13,3),(4,5),(1,6),(19,7),(13,8),(4,9),(1,9),(13,12),(19,11),(4,13),(1,14),(14,16),(2,16),(20,15),(5,17),(14,19),(5,9),(2,19),(20,20),(20,11),(5,21),(14,23),(2,21),(5,19),(2,24),(5,14),(2,2),(21,26),(15,25),(2,14),(21,4),(15,28),(6,27),(21,20),(3,17),(15,2),(6,29),(3,31),(21,30),(6,13),(3,2),(6,32),(10,33),(10,34),(10,23),(10,35),(10,36),(11,33),(11,34),(11,23),(11,35),(11,36),(11,37),(12,33),(12,34),(12,23),(12,35),(12,36),(12,37),(12,38),(7,2),(7,6),(7,9),(7,14),(8,16),(8,19),(8,21),(8,24),(8,2),(8,14),(9,17),(9,31),(9,2);
+/*!40000 ALTER TABLE `ingredients_to_products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `orders`
+--
+
+DROP TABLE IF EXISTS `orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `orders` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `paid_status` tinyint(1) NOT NULL DEFAULT '0',
+  `address` varchar(255) NOT NULL,
+  `price` varchar(128) NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `orders_users_id_fk` (`user_id`),
+  CONSTRAINT `orders_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orders`
+--
+
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `orders_to_products`
+--
+
+DROP TABLE IF EXISTS `orders_to_products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `orders_to_products` (
+  `order_id` int NOT NULL,
+  `products_id` int NOT NULL,
+  `quantity` int NOT NULL,
+  KEY `basket_to_products` (`order_id`),
+  KEY `basket_to_product_id` (`products_id`),
+  CONSTRAINT `basket_to_product_id` FOREIGN KEY (`products_id`) REFERENCES `products` (`id`),
+  CONSTRAINT `basket_to_products` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orders_to_products`
+--
+
+LOCK TABLES `orders_to_products` WRITE;
+/*!40000 ALTER TABLE `orders_to_products` DISABLE KEYS */;
+/*!40000 ALTER TABLE `orders_to_products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `products`
+--
+
+DROP TABLE IF EXISTS `products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `products` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_name` varchar(255) NOT NULL,
+  `price` float(64,0) NOT NULL,
+  `img` text NOT NULL,
+  `type_id` int NOT NULL,
+  `supplier_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `products_to_categories` (`type_id`),
+  KEY `products_to_supplier` (`supplier_id`),
+  CONSTRAINT `products_to_categories` FOREIGN KEY (`type_id`) REFERENCES `products_types` (`id`),
+  CONSTRAINT `products_to_supplier` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `products`
+--
+
+LOCK TABLES `products` WRITE;
+/*!40000 ALTER TABLE `products` DISABLE KEYS */;
+INSERT INTO `products` VALUES (1,'Pizza Pepperoni with tomatoes',6,'https://roll-club.kh.ua/wp-content/uploads/2021/04/okean-1.jpg.webp',3,1),(2,'Pizza Texas',2,'https://roll-club.kh.ua/wp-content/uploads/2021/04/4-mjasa-1.jpg.webp',3,1),(3,'Pizza Hawaiian',8,'https://roll-club.kh.ua/wp-content/uploads/2021/04/rostbif-v-tunce-1.jpg.webp',3,1),(4,'Original burger',3,'https://316024.selcdn.ru/wiget/4d4c871a-107f-11e7-80df-d8d38565926f/ba3a1ca2-2ec6-4cf4-a843-f7f0fc0f175a_Medium_.jpg',4,2),(5,'Crispy Chicken burger',4,'https://316024.selcdn.ru/wiget/4d4c871a-107f-11e7-80df-d8d38565926f/93bce037-709e-41a0-9beb-ab3670663b40_Medium_.jpg',4,2),(6,'Bacon Cheese Burger',7,'https://316024.selcdn.ru/wiget/4d4c871a-107f-11e7-80df-d8d38565926f/49e75c35-6fff-4a0f-8d6a-959cf4721c74_Medium_.jpg',4,2),(7,'Pizza Ocean',7,'https://roll-club.kh.ua/wp-content/uploads/2019/03/kapricheza.jpg.webp',3,3),(8,'Pizza Florida',8,'https://roll-club.kh.ua/wp-content/uploads/2015/09/4-syra.jpg.webp',3,3),(9,'Pizza Italiano',6,'https://roll-club.kh.ua/wp-content/uploads/2014/08/ukrainskaja.jpg.webp',3,3),(10,'Philadelphia with salmon',7,'https://ninjasushi.com.ua/img/452.png',8,4),(11,'Unagi Philadelphia',7,'https://ninjasushi.com.ua/img/102-600x600.png',8,4),(12,'Himawari',7,'https://roll-club.kh.ua/wp-content/uploads/2014/08/ukrainskaja.jpg.webp',8,4),(13,'Swedish Meatballs',4,'https://target.scene7.com/is/image/Target/GUEST_9066181d-e570-4eb1-b85d-1c8a547857fe?wid=1416&hei=1416&fmt=webp',5,5),(14,'Unwrapped Burrito Bowl',5,'https://target.scene7.com/is/image/Target/GUEST_7c640617-96cd-4236-96f0-38a995828861?wid=1416&hei=1416&fmt=webp',5,5),(15,'Tortellini Bowls',4,'https://target.scene7.com/is/image/Target/GUEST_dd195641-5a34-4be1-9e14-c4632ee5942e?wid=1416&hei=1416&fmt=webp',5,5),(19,'Angel Food Cake',7,'https://i5.walmartimages.com/asr/7be23ae2-0733-4fe1-a13c-13c1121db61a.37700bee4e0c25b6a3f93496ae17c7c7.jpeg',6,7),(20,'New York Style Cheesecake',5,'https://i5.walmartimages.com/asr/7df68f47-78dc-4308-8a46-2ca7e1fa50e6.b2973bca56a71b9dc3e773ee08aeb1a6.jpeg',6,7),(21,'Sweet Potato Pie',7,'https://i5.walmartimages.com/asr/7bd145de-7975-4c04-842e-188a5a0be79d_2.57a9e072cd4d529d16ccd9125f6a035d.jpeg',7,7),(30,'Set Masasi2',20,'Lorem Ipsum',8,4),(31,'Set Masasi2',20,'Lorem Ipsum',8,4);
+/*!40000 ALTER TABLE `products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `products_types`
+--
+
+DROP TABLE IF EXISTS `products_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `products_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_type` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `products_types_category_name_uindex` (`product_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `products_types`
+--
+
+LOCK TABLES `products_types` WRITE;
+/*!40000 ALTER TABLE `products_types` DISABLE KEYS */;
+INSERT INTO `products_types` VALUES (4,'burger'),(6,'dessert'),(5,'frozen_meal'),(7,'pastry'),(3,'pizza'),(8,'sushi');
+/*!40000 ALTER TABLE `products_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `suppliers`
+--
+
+DROP TABLE IF EXISTS `suppliers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `suppliers` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `supp_name` varchar(255) DEFAULT NULL,
+  `type_id` int NOT NULL,
+  `image` text NOT NULL,
+  `open_time` varchar(32) NOT NULL,
+  `close_time` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `suppliers_to_type` (`type_id`),
+  CONSTRAINT `suppliers_to_type` FOREIGN KEY (`type_id`) REFERENCES `suppliers_types` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `suppliers`
+--
+
+LOCK TABLES `suppliers` WRITE;
+/*!40000 ALTER TABLE `suppliers` DISABLE KEYS */;
+INSERT INTO `suppliers` VALUES (1,'Pizza Club',4,'https://play-lh.googleusercontent.com/qMewibe3u5Wvq3fBf3Ca3_QItjHCOKeGrOAzVXWxqzgRpMwxYlD5CA6M2M5L78SwNA','09:00','20:00'),(2,'Burger Club',4,'https://eda.ua/images/506509-195-195-burger_club_harkov.jpg','10:00','20:00'),(3,'Saint Frank Coffee',7,'http://cdn.shopify.com/s/files/1/1578/1589/files/colorf-01_198x200.png','12:00','18:00'),(4,'Sushi Space',4,'https://image.freepik.com/free-vector/sushi-restaurant-logo_8169-12.jpg','08:00','20:00'),(5,'Target',6,'https://1000logos.net/wp-content/uploads/2021/04/Target-logo.png','00:00','24:00'),(7,'Linea Caffe',7,'https://lineacaffe.com/wp-content/themes/lineacaffe/images/linea-logo.svg','07:00','19:00');
+/*!40000 ALTER TABLE `suppliers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `suppliers_types`
+--
+
+DROP TABLE IF EXISTS `suppliers_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `suppliers_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type_name` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `suppliers_type_type_name_uindex` (`type_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `suppliers_types`
+--
+
+LOCK TABLES `suppliers_types` WRITE;
+/*!40000 ALTER TABLE `suppliers_types` DISABLE KEYS */;
+INSERT INTO `suppliers_types` VALUES (7,'coffee_shop'),(4,'restaurant'),(6,'supermarket');
+/*!40000 ALTER TABLE `suppliers_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(128) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_email_uindex` (`email`),
+  KEY `users_users_roles_id_fk` (`role`),
+  CONSTRAINT `users_users_roles_id_fk` FOREIGN KEY (`role`) REFERENCES `users_roles` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (28,'asdasdas','asdasdasd',1,'2022-02-13 02:29:19',NULL),(29,'sukablyat@cpdtzalupa.coma','$2a$04$LHRtiqIlP/09bbz/qzJciOxzQ32ZtjaXFQ4hB1.oNFrJ3fJdK7SjK',1,'2022-02-13 02:32:53',NULL),(31,'sukablyat@cpdtzalupa.com','$2a$04$0gRHJJar4K/W3q1QuANjbuXW2Z5ffLkDMH4rDUGAB1TtmDsBKiX1a',1,'2022-02-13 02:34:47',NULL),(33,'sukablsyat@cpdtzalupa.com','$2a$04$C3SaDv3Jz2h4TWjtIj9SgeZjrFG2PX/e6dNIbuOSnTurIiAiyNH8i',2,'2022-02-13 02:38:19','2022-02-13 02:51:41');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users_roles`
+--
+
+DROP TABLE IF EXISTS `users_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users_roles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users_roles`
+--
+
+LOCK TABLES `users_roles` WRITE;
+/*!40000 ALTER TABLE `users_roles` DISABLE KEYS */;
+INSERT INTO `users_roles` VALUES (1,'user'),(2,'admin');
+/*!40000 ALTER TABLE `users_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2022-02-15 18:04:18
