@@ -1,4 +1,4 @@
-# nix-front
+# nixProject
 
 ## Project setup
 ```
