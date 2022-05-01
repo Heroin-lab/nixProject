@@ -53,9 +53,9 @@ func Start(config *configs.Config) error {
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:8080", "http://localhost:63343"},
 		AllowedMethods:   []string{"POST", "GET", "DELETE", "PATCH"},
+		AllowedHeaders:   []string{"accept", "authorization", "content-type"},
 		AllowCredentials: true,
-		// Enable Debugging for testing, consider disabling in production
-		Debug: true,
+		Debug:            true,
 	})
 
 	handler := c.Handler(srv.Router)
@@ -94,6 +94,9 @@ func (s *Server) configureRouter() {
 	s.Router.HandleFunc("/register", middleware.PostCheck(s.UserHandler.HandleUsersCreate()))
 	s.Router.HandleFunc("/login", middleware.PostCheck(s.UserHandler.HandleUsersLogin()))
 	s.Router.HandleFunc("/update-token", middleware.GetCheck(s.UserHandler.HandleRefreshTokens()))
+	s.Router.HandleFunc("/check-rules", middleware.GetCheck(
+		middleware.AdminTokenCheck(
+			s.UserHandler.HandleAdminTokenCheck())))
 
 	s.Router.HandleFunc("/change-password", middleware.PatchCheck(
 		middleware.UserTokenCheck(

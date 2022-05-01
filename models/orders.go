@@ -20,4 +20,7 @@ type OrderForInsert struct {
 	Price       float64 `json:"price"`
 	User_id     string  `json:"user_Id"`
 	ProductArr  string  `json:"productArr"`
+	Phone       string  `json:"phone"`
+	First_name  string  `json:"first_name"`
+	Second_name string  `json:"second_name"`
 }

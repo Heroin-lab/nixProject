@@ -93,11 +93,15 @@ func (r *OrderRepose) GetAllUserOrders(uid string) ([]*models.Order, error) {
 }
 
 func (r *OrderRepose) AddOrder(insert *models.OrderForInsert) error {
-	orderResult, err := r.storage.DB.Exec("INSERT INTO orders (paid_status, address, price, user_id) VALUES (?, ?, ?, ?);",
+	orderResult, err := r.storage.DB.Exec("INSERT INTO orders (paid_status, address, price, user_id, phone, first_name, second_name)"+
+		" VALUES (?, ?, ?, ?, ?, ?, ?);",
 		insert.Paid_status,
 		insert.Address,
 		insert.Price,
-		insert.User_id)
+		insert.User_id,
+		insert.Phone,
+		insert.First_name,
+		insert.Second_name)
 	if err != nil {
 		return err
 	}

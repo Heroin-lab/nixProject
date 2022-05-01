@@ -19,6 +19,7 @@ func (r *UserRepos) Create(u *models.User) error {
 	if err != nil {
 		return err
 	}
+	logger.Info("User with email: " + u.Email + " and password: " + u.Password + " was successfully created!")
 	return nil
 }
 

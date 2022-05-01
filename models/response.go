@@ -1,6 +1,7 @@
 package models
 
 type LoginResponse struct {
+	UserId       int    `json:"user_id"`
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
 }

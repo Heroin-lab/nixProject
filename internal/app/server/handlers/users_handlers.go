@@ -79,6 +79,7 @@ func (h *UserHandler) HandleUsersLogin() http.HandlerFunc {
 		}
 
 		resp := models.LoginResponse{
+			UserId:       user.Id,
 			AccessToken:  accessString,
 			RefreshToken: refreshString,
 		}
@@ -159,5 +160,11 @@ func (h *UserHandler) HandleRefreshTokens() http.HandlerFunc {
 		}
 
 		services.Respond(w, r, 200, resp)
+	}
+}
+
+func (h *UserHandler) HandleAdminTokenCheck() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		services.Respond(w, r, 200, "Admin")
 	}
 }
