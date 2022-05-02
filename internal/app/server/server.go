@@ -55,7 +55,6 @@ func Start(config *configs.Config) error {
 		AllowedMethods:   []string{"POST", "GET", "DELETE", "PATCH"},
 		AllowedHeaders:   []string{"accept", "authorization", "content-type"},
 		AllowCredentials: true,
-		Debug:            true,
 	})
 
 	handler := c.Handler(srv.Router)

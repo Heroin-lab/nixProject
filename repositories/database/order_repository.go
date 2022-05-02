@@ -1,6 +1,7 @@
 package database
 
 import (
+	logger "github.com/Heroin-lab/heroin-logger/v3"
 	"github.com/Heroin-lab/nixProject/models"
 	"strconv"
 	"strings"
@@ -89,6 +90,7 @@ func (r *OrderRepose) GetAllUserOrders(uid string) ([]*models.Order, error) {
 		}
 	}
 
+	logger.Info("All orders list was sent to user with id=" + uid)
 	return ordersArray, nil
 }
 
@@ -114,6 +116,8 @@ func (r *OrderRepose) AddOrder(insert *models.OrderForInsert) error {
 	if err != nil {
 		return err
 	}
+
+	logger.Info("User with id: " + insert.User_id + "was successfully make an order")
 	return nil
 }
 
@@ -123,5 +127,6 @@ func (r *OrderRepose) DeleteOrder(deleteId string) error {
 		return err
 	}
 
+	logger.Info("Order with 'order_id='" + deleteId + "was successfully deleted!")
 	return nil
 }

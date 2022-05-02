@@ -47,6 +47,8 @@ func (r *ProductRepose) GetByCategory(category string) ([]*models.ForSelectProdu
 			Supplier:       u.Supplier,
 		})
 	}
+
+	logger.Info("The product set with the type " + category + " was successfully transferred")
 	return allProdArr, nil
 }
 

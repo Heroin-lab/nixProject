@@ -1,5 +1,5 @@
 bind_addr = ":7777"
-log_level = "debug"
+log_level = "info"
 database_url = "kirill:Ya8eb2a3l@/nix_db"
 
  [Tokens]

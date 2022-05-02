@@ -19,7 +19,7 @@ func (r *UserRepos) Create(u *models.User) error {
 	if err != nil {
 		return err
 	}
-	logger.Info("User with email: " + u.Email + " and password: " + u.Password + " was successfully created!")
+	logger.Info("User with email: '" + u.Email + "' and password: '" + u.Password + "' was successfully created!")
 	return nil
 }
 
@@ -36,7 +36,7 @@ func (r *UserRepos) GetByEmail(email string) (*models.User, error) {
 	); err != nil {
 		return nil, err
 	}
-
+	logger.Info("A user with this email: '" + u.Email + "' has been successfully found")
 	return u, nil
 }
 
@@ -69,6 +69,6 @@ func (r *UserRepos) UpdatePassword(u *models.ChangePassModel) error {
 	if err != nil {
 		return err
 	}
-	logger.Info("User with email='" + u.Email + "' was successfully change the password!")
+	logger.Info("User with email: '" + u.Email + "' was successfully change the password!")
 	return nil
 }
