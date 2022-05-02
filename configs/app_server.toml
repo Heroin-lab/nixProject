@@ -1,6 +1,6 @@
 bind_addr = ":7777"
 log_level = "info"
-database_url = "kirill:Ya8eb2a3l@/nix_db"
+database_url = "admin:sf9RWMEBmWnn@/nix_db"
 
  [Tokens]
  accessSecret  = "access_secret_k"

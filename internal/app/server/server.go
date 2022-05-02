@@ -51,7 +51,7 @@ func Start(config *configs.Config) error {
 	srv := NewServer(store)
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:8080", "http://localhost:63343"},
+		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"POST", "GET", "DELETE", "PATCH"},
 		AllowedHeaders:   []string{"accept", "authorization", "content-type"},
 		AllowCredentials: true,
