@@ -1,0 +1,7 @@
+# nixProject
+
+## Project setup
+```
+make
+```
+
