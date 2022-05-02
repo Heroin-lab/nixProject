@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./style/fonts.css">
+    <link rel="stylesheet" href="./style/style.css">
+    <title>KirillProject</title>
+</head>
+<body>
+    <header class="header">
+        <div class="head-container">
+            <a href="#"><img class="logo" src="./img/crop-logo.png" alt="#logo" width="60" height="50"></a>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="./item_list.html">Список товаров</a></li>
+                    <li><a href="#">Коризина</a></li>
+                    <li><a href="#">Войти</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <section class="slider-hub">
+            <div class="slides">
+                <input type="radio" class="slides__buttons" name="radio-btn" id="radio1">
+                <input type="radio" class="slides__buttons" name="radio-btn" id="radio2">
+                <input type="radio" class="slides__buttons" name="radio-btn" id="radio3">
+
+                <div class="slides__image first">
+                    <img src="./img/1slide.jpg" alt="#" width="1200" height="628">
+                </div>
+
+                <div class="slides__image">
+                    <img src="./img/2slide.jpg" alt="#" width="1200" height="628">
+                </div>
+
+                <div class="slides__image">
+                    <img src="./img/3slide.jpg" alt="#" width="1200" height="628">
+                </div>
+
+                <div class="slides__nav-auto">
+                    <div class="auto-btn1"></div>
+                    <div class="auto-btn2"></div>
+                    <div class="auto-btn3"></div>
+                </div>
+            </div>
+
+            <div class="nav-manual">
+                <label for="radio1" class="nav-manual__btn"></label>
+                <label for="radio2" class="nav-manual__btn"></label>
+                <label for="radio3" class="nav-manual__btn"></label>
+            </div>
+        </section>
+
+        <section class="popular-items">
+            <div class="item-list__item">
+                <a href="#">
+                    <img src="./img/popular-item2.jpg" alt="" width="220" height="270">
+                    <p>Item for item</p>
+                </a>
+                <h5>777$</h5>
+            </div>
+
+            <div class="item-list__item">
+                <a href="#">
+                    <img src="./img/popular-item2.jpg" alt="" width="220" height="270">
+                    <p>Item for item</p>
+                </a>
+                <h5>499$</h5>
+            </div>
+
+            <div class="item-list__item">
+                <a href="#">
+                    <img src="./img/popular-item2.jpg" alt="" width="220" height="270">
+                    <p>Item for item</p>
+                </a>
+                <h5>1099$</h5>
+            </div>
+
+            <div class="item-list__item">
+                <a href="#">
+                    <img src="./img/popular-item2.jpg" alt="" width="220" height="270">
+                    <p>Item for item</p>
+                </a>
+                <h5>1099$</h5>
+            </div>
+        </section>
+    </main>
+
+    <script type="text/javascript" defer src="scripts/slider_animation.js"></script>
+</body>
+</html>
